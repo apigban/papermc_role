@@ -1,0 +1,172 @@
+---
+- name: Verify
+  hosts: all
+  gather_facts: false
+  vars_files:
+    - ../../defaults/main.yml
+    - ../../vars/main.yml
+  tasks:
+    - name: Check that the ansible user was created
+      ansible.builtin.command: id "{{ user.name }}"
+      become: true
+      failed_when: false
+      changed_when: false
+      register: user_check
+
+    - name: Assert that the user was created
+      ansible.builtin.assert:
+        that: user_check.rc == 0
+
+    - name: Check that the hostname is set
+      ansible.builtin.command: hostname
+      register: hostname_check
+      changed_when: false
+
+    - name: Assert that the hostname is set correctly
+      ansible.builtin.assert:
+        that: hostname_check.stdout == inventory_hostname
+
+    - name: Check that the papermc directory exists
+      ansible.builtin.stat:
+        path: "{{ papermc_dir }}"
+      register: papermc_dir_check
+
+    - name: Assert that the papermc directory exists
+      ansible.builtin.assert:
+        that: papermc_dir_check.stat.isdir is defined
+
+    - name: Check that the PaperMC server JAR was downloaded
+      ansible.builtin.stat:
+        path: "{{ papermc_server_jar_path }}"
+      register: papermc_jar_check
+
+    - name: Assert that the PaperMC server JAR exists
+      ansible.builtin.assert:
+        that: papermc_jar_check.stat.exists
+
+    - name: Check that the papermc-start.sh script was copied
+      ansible.builtin.stat:
+        path: "{{ papermc_dir }}/papermc-start.sh"
+      register: papermc_start_script_check
+
+    - name: Assert that the papermc-start.sh script exists
+      ansible.builtin.assert:
+        that: papermc_start_script_check.stat.exists
+
+    - name: Check that the eula.txt file was created
+      ansible.builtin.stat:
+        path: "{{ papermc_dir }}/eula.txt"
+      register: eula_check
+
+    - name: Assert that the eula.txt file exists
+      ansible.builtin.assert:
+        that: eula_check.stat.exists
+
+    - name: Check that the plugins directory exists
+      ansible.builtin.stat:
+        path: "{{ paperMC_plugins_path }}"
+      register: plugins_dir_check
+
+    - name: Assert that the plugins directory exists
+      ansible.builtin.assert:
+        that: plugins_dir_check.stat.isdir is defined
+
+    - name: Check that packages are installed
+      become: true
+      ansible.builtin.package:
+        name: "{{ item }}"
+        state: present
+      loop: "{{ packages }}"
+
+    - name: Check that firewall ports are enabled
+      become: true
+      ansible.posix.firewalld:
+        port: "{{ item }}"
+        state: enabled
+        permanent: true
+      loop: "{{ firewall_ports }}"
+
+    - name: Check that the server.properties file was created
+      ansible.builtin.stat:
+        path: "{{ papermc_dir }}/server.properties"
+      register: server_properties_check
+
+    - name: Assert that the server.properties file exists
+      ansible.builtin.assert:
+        that: server_properties_check.stat.exists
+
+    - name: Check that the Geyser config file was created
+      ansible.builtin.stat:
+        path: "{{ user.home_dir }}/papermc/{{ paperMC_plugins.geyser.config.path }}"
+      register: geyser_config_check
+
+    - name: Assert that the Geyser config file exists
+      ansible.builtin.assert:
+        that: geyser_config_check.stat.exists
+
+    - name: Check that the key.pem file was copied to Geyser-Spigot path
+      ansible.builtin.stat:
+        path: "{{ user.home_dir }}/papermc/plugins/Geyser-Spigot/key.pem"
+      register: geyser_key_check
+
+    - name: Assert that the key.pem file exists in Geyser-Spigot path
+      ansible.builtin.assert:
+        that: geyser_key_check.stat.exists
+
+    # New tests
+
+    - name: Check that all specified packages are installed
+      become: true
+      ansible.builtin.package:
+        name: "{{ item }}"
+        state: present
+      loop: "{{ packages }}"
+
+    - name: Check that all specified firewall ports are enabled
+      become: true
+      ansible.posix.firewalld:
+        port: "{{ item }}"
+        state: enabled
+        permanent: true
+      loop: "{{ firewall_ports }}"
+
+    - name: Check that the PaperMC server JAR was copied to /usr/local/bin/
+      ansible.builtin.stat:
+        path: "{{ papermc_server_jar_path }}"
+      register: papermc_server_jar_copy_check
+
+    - name: Assert that the PaperMC server JAR was copied to /usr/local/bin/
+      ansible.builtin.assert:
+        that: papermc_server_jar_copy_check.stat.exists
+
+    - name: Check the content of server.properties
+      ansible.builtin.slurp:
+        src: "{{ papermc_dir }}/server.properties"
+      register: server_properties_content
+
+    - name: Check that PaperMC plugins are downloaded
+      ansible.builtin.stat:
+        path: "{{ paperMC_plugins_path }}/Geyser-Spigot.jar" # Assuming Geyser is a key plugin
+      register: geyser_plugin_check
+
+    - name: Assert that PaperMC plugins are downloaded
+      ansible.builtin.assert:
+        that: geyser_plugin_check.stat.exists
+
+    - name: Check the specific Geyser config file path
+      ansible.builtin.stat:
+        path: "{{ user.home_dir }}/papermc/plugins/Geyser-Spigot/config.yml"
+      register: geyser_config_path_check
+
+    - name: Assert the specific Geyser config file path
+      ansible.builtin.assert:
+        that: geyser_config_path_check.stat.exists
+
+    - name: Check the source of the key.pem file
+      ansible.builtin.stat:
+        path: "{{ user.home_dir }}/papermc/plugins/floodgate/key.pem"
+      register: geyser_key_source_check
+
+    - name: Assert the source of the key.pem file
+      ansible.builtin.assert:
+        that: geyser_key_source_check.stat.exists

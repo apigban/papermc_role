@@ -1,0 +1,10 @@
+---
+- name: Initialize papermc server
+  ansible.builtin.command:
+    cmd: "{{ user.home_dir }}/papermc/papermc-start.sh"
+  args:
+    chdir: "{{ user.home_dir }}/papermc"
+  async: 60
+  poll: 60
+  register: papermc_start_stdout
+  ignore_errors: true

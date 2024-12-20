@@ -1,0 +1,2 @@
+---
+papermc_dir: "{{ user.home_dir }}/papermc"

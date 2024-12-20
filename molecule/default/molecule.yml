@@ -1,0 +1,48 @@
+---
+dependency:
+  name: galaxy
+
+driver:
+  name: molecule-proxmox
+  options:
+    api_host: ${proxmox_api_host}
+    api_port: ${proxmox_api_port}
+    api_user: ${proxmox_api_user}
+    api_token_id: ${proxmox_api_token_id}
+    api_token_secret: ${proxmox_api_token_secret}
+    node: "proxmox"
+    ssh_user: ${proxmox_ssh_user}
+    ssh_port: ${proxmox_ssh_port}
+    ssh_identity_file: ${proxmox_ssh_identity_file}
+    timeout: 300
+    template_name: ${proxmox_template_name}
+
+platforms:
+  - name: molecule-alma9.4
+    template_name: alma9.4-template
+    newid: 9988
+    ciuser: ${proxmox_ciuser}
+    cipassword: ${proxmox_cipassword}
+    ipconfig:
+      ipconfig0: 'ip=192.168.2.98/24,gw=192.168.2.1'
+    nameservers:
+      - 192.168.2.10
+
+provisioner:
+  name: ansible
+  log: true
+  config_options:
+    ssh-connection:
+      host_key_checking: false
+  connection_options:
+    ansible_ssh_user: ${proxmox_ssh_user}
+    ansible_ssh_common_args: -o UserKnownHostsFile=/dev/null -o ControlMaster=auto
+        -o ControlPersist=60s -o ForwardX11=no -o LogLevel=ERROR -o IdentitiesOnly=yes
+        -o StrictHostKeyChecking=no
+    ansible_become_pass: ${proxmox_cipassword}
+  lint: 
+    name: "ansible-lint"
+
+verifier:
+  name: ansible
+  enabled: true

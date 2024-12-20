@@ -1,0 +1,23 @@
+---
+- name: Converge
+  hosts: all
+  gather_facts: true
+  become: true
+  vars_files:
+    - ../../vars/secrets.yml
+  roles: 
+    - role: apigban.rhel-9.3-base
+
+  tasks:
+    - name: Testing papermc_role
+      ansible.builtin.include_role:
+        name: apigban.papermc_role
+
+    - name: Check uname
+      ansible.builtin.raw: uname -a
+      register: result
+      changed_when: false
+
+    - name: Print some info
+      ansible.builtin.assert:
+        that: result.stdout | regex_search("^Linux")

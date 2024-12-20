@@ -1,0 +1,40 @@
+---
+- name: Create a papermc plugins directory
+  ansible.builtin.file:
+    path: "{{ paperMC_plugins_path }}"
+    state: directory
+    owner: "{{ user.name }}"
+    mode: '0755'
+
+- name: Download PaperMC plugins
+  ansible.builtin.get_url:
+    url: "{{ paperMC_plugins[item].download.url }}"
+    dest: "{{ paperMC_plugins_path }}/{{ paperMC_plugins[item].download.filename }}"
+    owner: "{{ user.name }}"
+    mode: '0775'
+  loop: "{{ paperMC_plugins | dict2items | map(attribute='key') | list }}"
+  changed_when: true
+  notify: Initialize papermc server
+
+- meta: flush_handlers
+
+- name: Create Geyser Config
+  become: true
+  become_user: root
+  ansible.builtin.copy:
+    src: "files/geyser-config.yml"
+    dest: "{{ user.home_dir }}/papermc/{{ paperMC_plugins.geyser.config.path }}"
+    owner: "{{ user.name }}"
+    mode: '0755'
+
+- name: Copy the key.pem file to Geyser-Spigot path
+  ansible.builtin.copy:
+    src: "{{ user.home_dir }}/papermc/plugins/floodgate/key.pem"
+    dest: "{{ user.home_dir }}/papermc/plugins/Geyser-Spigot/key.pem"
+    remote_src: true
+    owner: "{{ user.name }}"
+    mode: '0755'
+  changed_when: true
+  notify: Initialize papermc server
+
+- meta: flush_handlers

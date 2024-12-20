@@ -1,0 +1,132 @@
+minecraft:
+  server_properties:
+    creative:
+      max-players: 2
+      pvp: false
+      server_port: 25565
+      query_port: 25565
+      rcon_port: 25565
+      difficulty: peaceful # (Allowed values: "peaceful", "easy", "normal", "hard")
+      gamemode: creative # (Allowed values: "survival", "creative", "adventure", "spectator")
+      online_mode: true
+      enable_command_block: true
+      enable_jmx_monitoring: false
+      enable_status: true
+      enforce_secure_profile: true
+      enforce_whitelist: true
+      initial_disabled_packs: []
+      initial_enabled_packs:
+        - vanilla
+      accepts_transfers: false
+      allow_flight: true
+      allow_nether: true
+      broadcast_console_to_ops: true
+      broadcast_rcon_to_ops: true
+      bug_report_link: ""
+      debug: false
+      enable_query: false
+      enable_rcon: false
+      entity_broadcast_range_percentage: 100
+      force_gamemode: false
+      function_permission_level: 2
+      generate_structures: true
+      generator_settings: {}
+      hardcore: false
+      hide_online_players: false
+      level_name: world
+      level_seed: "-3899835130120818196"
+      level_type: "minecraft:normal"
+      log_ips: true
+      max_chained_neighbor_updates: 1000000
+      max_players: 2
+      max_tick_time: 60000
+      max_world_size: 29999984
+      motd: "Creative Mode"
+      network_compression_threshold: 256
+      online_mode: true
+      op_permission_level: 4
+      pause_when_empty_seconds: -1
+      player_idle_timeout: 0
+      prevent_proxy_connections: false
+      rate_limit: 0
+      rcon_password: ""
+      region_file_compression: deflate
+      require_resource_pack: false
+      resource_pack: ""
+      resource_pack_id: ""
+      resource_pack_sha1: ""
+      server_ip: ""
+      simulation_distance: 10
+      spawn_monsters: true
+      spawn_protection: 16
+      sync_chunk_writes: true
+      text_filtering_config: ""
+      text_filtering_version: 0
+      use_native_transport: true
+      view_distance: 10
+      white_list: false
+    survival:
+      max-players: 2
+      pvp: false
+      server_port: 25565
+      query_port: 25565
+      rcon_port: 25565
+      difficulty: peaceful # (Allowed values: "peaceful", "easy", "normal", "hard")
+      gamemode: survival # (Allowed values: "survival", "creative", "adventure", "spectator")
+      online_mode: true
+      enable_command_block: true
+      enable_jmx_monitoring: false
+      enable_status: true
+      enforce_secure_profile: true
+      enforce_whitelist: true
+      initial_disabled_packs: []
+      initial_enabled_packs:
+        - vanilla
+      accepts_transfers: false
+      allow_flight: true
+      allow_nether: true
+      broadcast_console_to_ops: true
+      broadcast_rcon_to_ops: true
+      bug_report_link: ""
+      debug: false
+      enable_query: false
+      enable_rcon: false
+      entity_broadcast_range_percentage: 100
+      force_gamemode: false
+      function_permission_level: 2
+      generate_structures: true
+      generator_settings: {}
+      hardcore: false
+      hide_online_players: false
+      level_name: world
+      level_seed: "-3789608369447682495"
+      level_type: "minecraft:normal"
+      log_ips: true
+      max_chained_neighbor_updates: 1000000
+      max_players: 2
+      max_tick_time: 60000
+      max_world_size: 29999984
+      motd: "Survival Mode"
+      network_compression_threshold: 256
+      online_mode: true
+      op_permission_level: 4
+      pause_when_empty_seconds: -1
+      player_idle_timeout: 0
+      prevent_proxy_connections: false
+      rate_limit: 0
+      rcon_password: ""
+      region_file_compression: deflate
+      require_resource_pack: false
+      resource_pack: ""
+      resource_pack_id: ""
+      resource_pack_sha1: ""
+      server_ip: ""
+      simulation_distance: 10
+      spawn_monsters: true
+      spawn_protection: 16
+      sync_chunk_writes: true
+      text_filtering_config: ""
+      text_filtering_version: 0
+      use_native_transport: true
+      view_distance: 10
+      white_list: false

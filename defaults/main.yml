@@ -1,0 +1,101 @@
+---
+# defaults file for papermc-role/
+user:
+  home_dir: /home/ansible
+  name: ansible
+
+tailscale:
+  enabled: true
+  authkey: "{{ ts_secrets.authkey }}"
+
+join_domain:
+  enabled: false
+  
+packages:
+  - java-21-openjdk
+  - tmux
+
+firewall_ports:
+  - 19132/udp
+  - 19132/tcp
+  - 25565/udp
+  - 25565/tcp
+
+papermc_server_jar_path: /usr/local/bin/papermc-server.jar
+
+paperMC_gamemode: survival # (Allowed values: "survival", "creative")
+paperMC_version: 1.21.3
+paperMC_build: 81
+paperMC_eula: true
+paperMC_url: "https://api.papermc.io/v2/projects/paper/versions/{{ paperMC_version }}/builds/{{ paperMC_build }}/downloads/paper-{{ paperMC_version }}-{{ paperMC_build }}.jar"
+paperMC_plugins_path: "{{ user.home_dir }}/papermc/plugins"
+paperMC_plugins:
+  geyser:
+    description: "Enables java and bedrock crossplay"
+    doc_url: https://geysermc.org/wiki/geyser/setup/
+    download:
+      url: https://download.geysermc.org/v2/projects/geyser/versions/2.6.0/builds/732/downloads/spigot
+      filename: Geyser-Spigot.jar
+    config:
+      path: "plugins/Geyser-Spigot/config.yml"
+  floodgate:
+    description: "Addon for geyser"
+    doc_url: https://geysermc.org/wiki/floodgate/setup/
+    download:
+      url: https://download.geysermc.org/v2/projects/floodgate/versions/latest/builds/latest/downloads/spigot
+      filename: Floodgate-Spigot.jar
+    config:
+      path: ""
+  viaversion:
+    description: "Allow updated clients to join old server versions"
+    doc_url: https://geysermc.org/wiki/floodgate/setuphttps://hangar.papermc.io/ViaVersion/ViaVersion/
+    download:
+      url: https://hangarcdn.papermc.io/plugins/ViaVersion/ViaVersion/versions/5.2.0/PAPER/ViaVersion-5.2.0.jar
+      filename: ViaVersion-5.2.0.jar
+    config:
+      path: "plugins/ViaVersion/config.yml"
+  essentialsX:
+    description: "EssentialsX is the essential plugin for Spigot servers, providing core features for servers of any size and scale."
+    doc_url: https://essentialsx.net/wiki/Installing-EssentialsX.html
+    download:
+      url: https://github.com/EssentialsX/Essentials/releases/download/2.20.1/EssentialsX-2.20.1.jar
+      filename: EssentialsX-2.20.1.jar
+    config:
+      path: "plugins/EssentialsX/config.yml"
+  gsit:
+    description: "Sit"
+    doc_url: https://github.com/gecolay/GSit/releases
+    download:
+      url: https://github.com/gecolay/GSit/releases/download/1.12.1/GSit-1.12.1.jar
+      filename: GSit-1.12.1.jar
+    config:
+      path: "plugins/GSit/config.yml"
+  chunky:
+    description: "pre-generate world chunks"
+    doc_url: https://github.com/pop4959/Chunky/wiki
+    download:
+      url: https://hangarcdn.papermc.io/plugins/pop4959/Chunky/versions/1.4.28/PAPER/Chunky-Bukkit-1.4.28.jar
+      filename: Chunky-Bukkit-1.4.28.jar
+    config:
+      path: ""
+  imageFrame:
+    description: "Images in Item Frames"
+    doc_url: https://hangar.papermc.io/LOOHP/ImageFrame
+    download:
+      url: https://hangarcdn.papermc.io/plugins/LOOHP/ImageFrame/versions/1.7.12/PAPER/ImageFrame-1.7.12.0.jar
+      filename: ImageFrame-1.7.12.0.jar
+    config:
+      path: ""
+  auraSkills:
+    description: "Skills Plugin"
+    doc_url: https://hangar.papermc.io/Archy/AuraSkills
+    download:
+      url: https://hangarcdn.papermc.io/plugins/Archy/AuraSkills/versions/2.2.7/PAPER/AuraSkills-2.2.7.jar
+      filename: AuraSkills-2.2.7.jar
+    config:
+      path: ""
+
+eula_template_src: templates/eula.txt.j2
+server_properties_template_src: templates/server.properties.j2
+papermc_cron_job: "sleep 20 ; cd {{ user.home_dir }}/papermc ; {{ user.home_dir }}/papermc/papermc-start.sh"
+reboot_message: "Rebooting server to apply changes"

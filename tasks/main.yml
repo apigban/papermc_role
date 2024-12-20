@@ -1,0 +1,97 @@
+---
+- name: Create ansible user
+  become: true
+  become_user: root
+  ansible.builtin.user:
+    name: "{{ user.name }}"
+    home: "{{ user.home_dir }}"
+    create_home: true
+    state: present
+
+- name: Set hostname
+  ansible.builtin.hostname:
+    name: "{{ inventory_hostname }}"
+
+- name: Install packages
+  become: true
+  become_user: root
+  ansible.builtin.dnf:
+    name: "{{ packages | list }}"
+    state: latest
+
+- name: Allow traffic to java and bedrock ports
+  become: true
+  become_user: root
+  ansible.posix.firewalld:
+    port: "{{ item }}"
+    state: enabled
+    permanent: true
+    immediate: true
+  loop: "{{ firewall_ports }}"
+
+- name: Create a papermc directory
+  ansible.builtin.file:
+    path: "{{ papermc_dir }}"
+    state: directory
+    owner: "{{ user.name }}"
+    mode: '0755'
+
+- name: Download PaperMC
+  ansible.builtin.get_url:
+    url: "{{ paperMC_url }}"
+    dest: "{{ papermc_dir }}/paper-{{ paperMC_version }}-{{ paperMC_build }}.jar"
+    owner: "{{ user.name }}"
+    mode: '0775'
+
+- name: Copy paperMC to /usr/local/bin/
+  become: true
+  become_user: root
+  ansible.builtin.copy:
+    src: "{{ papermc_dir }}/paper-{{ paperMC_version }}-{{ paperMC_build }}.jar"
+    dest: "{{ papermc_server_jar_path }}"
+    remote_src: true
+    owner: "{{ user.name }}"
+    mode: '0755'
+
+- name: Copy the papermc-start.sh script to the papermc directory
+  ansible.builtin.copy:
+    src: "files/papermc-start.sh"
+    dest: "{{ papermc_dir }}/papermc-start.sh"
+    owner: "{{ user.name }}"
+    mode: '0775'
+
+- name: Accept EULA
+  ansible.builtin.template:
+    src: "{{ eula_template_src }}"
+    dest: "{{ papermc_dir }}/eula.txt"
+    owner: "{{ user.name }}"
+    mode: '0775'
+
+- name: Install and configure plugins
+  ansible.builtin.import_tasks: plugins.yml
+  
+- name: Include papermc server configuration variables
+  ansible.builtin.include_vars:
+    dir: vars
+    files_matching: server_properties.yml
+
+- name: Create server.properties from template
+  ansible.builtin.template:
+    src: "{{ server_properties_template_src }}"
+    dest: "{{ papermc_dir }}/server.properties"
+    owner: "{{ user.name }}"
+    mode: '0775'
+
+- name: Create cron entry to start papermc server on host reboot
+  ansible.builtin.cron:
+    name: "Start papermc server on host reboot"
+    special_time: reboot
+    job: "{{ papermc_cron_job }}"
+    user: "{{ user.name }}"
+
+- name: Reboot the server
+  become: true
+  ansible.builtin.reboot:
+    msg: "{{ reboot_message }}"
+    connect_timeout: 10
+    reboot_timeout: 90
