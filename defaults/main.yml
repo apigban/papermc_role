@@ -20,6 +20,8 @@ firewall_ports:
   - 19132/tcp
   - 25565/udp
   - 25565/tcp
+  - 9100/tcp
+  - 9970/tcp
 
 papermc_server_jar_path: /usr/local/bin/papermc-server.jar
 
@@ -94,6 +96,15 @@ paperMC_plugins:
       filename: AuraSkills-2.2.7.jar
     config:
       path: ""
+  unifiedMetrics:
+    description: "Metrics Exporter plugin"
+    doc_url: https://docs.cubxity.dev/docs/unifiedmetrics/getting-started
+    download:
+      url: https://github.com/Cubxity/UnifiedMetrics/releases/download/v0.3.8/unifiedmetrics-platform-bukkit-0.3.8.jar
+      filename: unifiedmetrics-platform-bukkit-0.3.8.jar
+    config:
+      path: ""
+
 
 eula_template_src: templates/eula.txt.j2
 server_properties_template_src: templates/server.properties.j2
